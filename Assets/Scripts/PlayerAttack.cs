@@ -34,7 +34,7 @@ public class PlayerAttack : MonoBehaviour
         {
             // hubo colision
             Debug.Log("Hubo colision");
-            collider.gameObject.GetComponent<EnemyHitbox>().Hit();
+            collider.gameObject.GetComponent<IHitbox>().Hit();
         }
     }
 

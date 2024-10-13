@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class EnemyHitbox : MonoBehaviour
+public class EnemyHitbox : MonoBehaviour, IHitbox
 {
     [SerializeField]
     private Animator m_EnemyAnimator;
