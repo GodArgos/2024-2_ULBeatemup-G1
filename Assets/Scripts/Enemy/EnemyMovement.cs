@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum EnemyState
 {
-    Idle, Chasing, Attacking
+    Idle, Chasing, AttackingMelee, AttackingRange,
 }
 
 public class EnemyMovement : MonoBehaviour
@@ -13,13 +13,16 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField]
     private float m_RaycastDistance = 3f;
     [SerializeField]
-    private float m_AttackDistance = 0.5f;
+    private float m_AttackDistanceMelee = 0.5f;
+    [SerializeField]
+    private float m_AttackDistanceRange = 2f;
     [SerializeField]
     private float m_Speed = 4f;
     [SerializeField]
     private Transform m_RaycastGenerator;
     private EnemyState m_State = EnemyState.Idle;
     private Animator m_SpriteAnimator;
+
     private bool m_IsTalking = false;
 
     private Transform m_Player = null;
@@ -48,8 +51,11 @@ public class EnemyMovement : MonoBehaviour
             case EnemyState.Chasing:
                 OnChase();
             break;
-            case EnemyState.Attacking:
-                OnAttack();
+            case EnemyState.AttackingMelee:
+                OnAttackMelee();
+            break;
+            case EnemyState.AttackingRange:
+                OnAttackRange();
             break;
         }
     }
@@ -68,16 +74,28 @@ public class EnemyMovement : MonoBehaviour
         transform.position += m_Speed * Time.deltaTime * dir;
     }
 
-    private void OnAttack()
-    {}
+    private void OnAttackMelee()
+    {
+        m_SpriteAnimator.SetTrigger("MeleeAttack");
+        Debug.Log("Ataque Melee");
+    }
 
-    
+     private void OnAttackRange()
+    {
+        m_SpriteAnimator.SetTrigger("RangeAttack");
+        Debug.Log("Ataque Range");
+    }
 
     private void AttackorChase(float distance)
     {
-        if (distance < m_AttackDistance)
-        {
-            m_State = EnemyState.Attacking;
+        if (distance < m_AttackDistanceRange)
+        {   
+            if(distance < m_AttackDistanceMelee){
+                m_State = EnemyState.AttackingMelee;
+                
+            }else{
+                m_State = EnemyState.AttackingRange;
+            }
         }else
         {
             m_State = EnemyState.Chasing;
