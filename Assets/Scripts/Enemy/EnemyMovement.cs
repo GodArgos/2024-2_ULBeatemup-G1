@@ -107,13 +107,12 @@ public class EnemyMovement : MonoBehaviour
     {
         if (distance < m_AttackDistanceRange)
         {   
-            if(distance < m_AttackDistanceMelee){
-                m_State = EnemyState.AttackingMelee;
-                
-            }else{
                 m_State = EnemyState.AttackingRange;
-            }
-        }else
+            
+        }else if(distance < m_AttackDistanceMelee){
+            m_State = EnemyState.AttackingMelee;
+        }
+        else
         {
             m_State = EnemyState.Chasing;
         }
