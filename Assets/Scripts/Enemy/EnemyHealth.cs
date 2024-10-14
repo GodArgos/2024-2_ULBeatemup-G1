@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
+    public static EnemyHealth Instance { get; private set; }
     public static event Action<Event> OnEnemyKilled;
-    [SerializeField] float health, maxHealth = 100f;
+    [SerializeField] 
+    public float health, maxHealth = 100f;
   
     [SerializeField] FloatingHealthBar healthBar;
 
@@ -19,6 +21,16 @@ public class EnemyHealth : MonoBehaviour
     {
         health = maxHealth;
         healthBar.UpdateHealthBar(health,maxHealth);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+        
+        
     }
 
     // Update is called once per frame

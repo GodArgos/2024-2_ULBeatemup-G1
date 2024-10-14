@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;  // Importar SceneManager
 
 public class playerHealth : MonoBehaviour
 {
+    public static playerHealth Instance { get; private set; }
     public float health;
     public float maxHealth;
     public Image healthBar;
@@ -13,6 +14,14 @@ public class playerHealth : MonoBehaviour
     void Start()
     {
         maxHealth = health;
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 
     void Update()
@@ -23,7 +32,7 @@ public class playerHealth : MonoBehaviour
         // Verificar si la salud llega a 0 o menos
         if (health <= 0)
         {
-            ResetLevel();  // Llamar a la función que reinicia el nivel
+            ResetLevel();  // Llamar a la funciï¿½n que reinicia el nivel
         }
     }
 

@@ -22,7 +22,7 @@ public class EnemyMovement : MonoBehaviour
     private Transform m_RaycastGenerator;
     private EnemyState m_State = EnemyState.Idle;
     private Animator m_SpriteAnimator;
-
+  
     private bool m_IsTalking = false;
 
     private Transform m_Player = null;
@@ -30,6 +30,7 @@ public class EnemyMovement : MonoBehaviour
     private void Awake() 
     {
         m_SpriteAnimator = transform.Find("Sprite").GetComponent<Animator>();
+        
         //m_RaycastGenerator = transform.Find("RaycastGenerator");
     }
 
@@ -76,14 +77,30 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnAttackMelee()
     {
-        m_SpriteAnimator.SetTrigger("MeleeAttack");
         Debug.Log("Ataque Melee");
+        m_SpriteAnimator.SetTrigger("MeleeAttack");
+        
+            var hit = Physics2D.Raycast(
+            m_RaycastGenerator.position,
+            Vector2.left,
+            m_RaycastDistance,
+            LayerMask.GetMask("Hitbox"));
+            if (hit.collider != null)
+            {
+            // Hay una colision con player
+                playerHealth.Instance.health -= UnityEngine.Random.Range(0.04f, 0.08f); 
+                Debug.Log("Vida Jugador: " + playerHealth.Instance.health);
+            }
+                   
     }
 
      private void OnAttackRange()
-    {
-        m_SpriteAnimator.SetTrigger("RangeAttack");
+    { 
         Debug.Log("Ataque Range");
+        m_SpriteAnimator.SetTrigger("RangeAttack");
+       
+        EnemyHealth.Instance.health -= UnityEngine.Random.Range(0.001f, 0.03f); 
+        Debug.Log("Vida Enemigo: " + EnemyHealth.Instance.health);
     }
 
     private void AttackorChase(float distance)
