@@ -20,17 +20,21 @@ public class EnemyMovement : MonoBehaviour
     private float m_Speed = 4f;
     [SerializeField]
     private Transform m_RaycastGenerator;
-    private EnemyState m_State = EnemyState.Idle;
+    private EnemyState  m_State= EnemyState.Idle;
     private Animator m_SpriteAnimator;
-  
+    public GameObject shurikken;
     private bool m_IsTalking = false;
 
     private Transform m_Player = null;
+    EnemyHealth enemyHealth;
+    playerHealth playerHealth;
+  
 
     private void Awake() 
     {
         m_SpriteAnimator = transform.Find("Sprite").GetComponent<Animator>();
-        
+        enemyHealth = GetComponent<EnemyHealth>();
+        playerHealth = GetComponent<playerHealth>();
         //m_RaycastGenerator = transform.Find("RaycastGenerator");
     }
 
@@ -79,7 +83,7 @@ public class EnemyMovement : MonoBehaviour
     {
         Debug.Log("Ataque Melee");
         m_SpriteAnimator.SetTrigger("MeleeAttack");
-        
+        float daño = UnityEngine.Random.Range(0.04f, 0.08f);
             var hit = Physics2D.Raycast(
             m_RaycastGenerator.position,
             Vector2.left,
@@ -88,8 +92,8 @@ public class EnemyMovement : MonoBehaviour
             if (hit.collider != null)
             {
             // Hay una colision con player
-                playerHealth.Instance.health -= UnityEngine.Random.Range(0.04f, 0.08f); 
-                Debug.Log("Vida Jugador: " + playerHealth.Instance.health);
+                playerHealth.health -= daño;
+                Debug.Log("Vida Jugador: " + playerHealth.health);
             }
                    
     }
@@ -98,9 +102,62 @@ public class EnemyMovement : MonoBehaviour
     { 
         Debug.Log("Ataque Range");
         m_SpriteAnimator.SetTrigger("RangeAttack");
-       
-        EnemyHealth.Instance.health -= UnityEngine.Random.Range(0.001f, 0.03f); 
-        Debug.Log("Vida Enemigo: " + EnemyHealth.Instance.health);
+        Instantiate(shurikken, transform.position, Quaternion.identity);
+        GameObject shurikkenInstance = Instantiate(shurikken, transform.position, Quaternion.identity);
+         // Mover el shurikken
+        if (shurikkenInstance != null)
+        {
+        // Esto moverá el shurikken 
+            StartCoroutine(MoveShurikken(shurikkenInstance));
+        }
+        /*
+        var hit = Physics2D.Raycast(
+            m_RaycastGenerator.position,
+            Vector2.right,
+            m_RaycastDistance,
+            LayerMask.GetMask("Hitbox")
+        );
+        if (hit.collider != null)
+        {
+            // Hay una colision con enemigo
+            float daño = UnityEngine.Random.Range(0.001f, 0.003f); 
+            enemyHealth.TakeDamage(daño);
+            Debug.Log("Vida Enemigo: " + enemyHealth.health);
+        }
+        */
+    }
+
+    // Método para mover el shurikken
+    // Método para mover el shurikken
+    private IEnumerator MoveShurikken(GameObject shurikken)
+    {
+        // Determina la dirección hacia la que está mirando el enemigo (hacia la derecha o izquierda)
+        Vector3 direction;
+        if(transform.localScale.x > 0){
+            direction = transform.right;
+        }else{
+            direction = -transform.right;
+        }
+
+        // Mueve el shurikken a lo largo de la dirección con velocidad
+        float lifetime = 2f;  // Tiempo que durará el shurikken antes de destruirse
+
+        while (shurikken != null)
+        {
+            // Mover el shurikken constantemente en la dirección elegida
+            shurikken.transform.Translate(direction * m_Speed * Time.deltaTime);
+            
+            // Reducir el tiempo de vida del shurikken
+            lifetime -= Time.deltaTime;
+            
+            if (lifetime <= 0f)
+            {
+                Destroy(shurikken); // Destruir el shurikken después de un tiempo
+                break;
+            }
+
+            yield return null; // Esperar un frame antes de moverlo de nuevo
+        }
     }
 
     private void AttackorChase(float distance)

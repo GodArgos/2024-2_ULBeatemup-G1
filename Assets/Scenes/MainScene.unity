@@ -556,7 +556,7 @@ Transform:
   m_GameObject: {fileID: 150958859}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 45.903168, y: -1.1919999, z: -10}
+  m_LocalPosition: {x: 45.721306, y: -1.1919999, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -940,7 +940,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.9499905, y: -0.63747966, z: -10}
+  m_LocalPosition: {x: 1.9499891, y: -0.6374558, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2667,9 +2667,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RaycastDistance: 10
-  m_AttackDistance: 0.5
+  m_AttackDistanceMelee: 0.5
+  m_AttackDistanceRange: 2
   m_Speed: 4
   m_RaycastGenerator: {fileID: 939058830}
+  shurikken: {fileID: 1662535601277777371, guid: febe8391d3460d845a6ba097808819e7, type: 3}
 --- !u!114 &1600986453
 MonoBehaviour:
   m_ObjectHideFlags: 0
