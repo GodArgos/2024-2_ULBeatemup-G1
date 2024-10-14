@@ -110,7 +110,7 @@ public class EnemyMovement : MonoBehaviour
         // Esto moverá el shurikken 
             StartCoroutine(MoveShurikken(shurikkenInstance));
         }
-        /*
+        
         var hit = Physics2D.Raycast(
             m_RaycastGenerator.position,
             Vector2.right,
@@ -120,11 +120,11 @@ public class EnemyMovement : MonoBehaviour
         if (hit.collider != null)
         {
             // Hay una colision con enemigo
-            float daño = UnityEngine.Random.Range(0.001f, 0.003f); 
-            enemyHealth.TakeDamage(daño);
-            Debug.Log("Vida Enemigo: " + enemyHealth.health);
+            float daño = UnityEngine.Random.Range(0.01f, 0.03f); 
+            playerHealth.health -= daño;
+            Debug.Log("Vida Enemigo: " + playerHealth.health);
         }
-        */
+        
     }
 
     // Método para mover el shurikken
@@ -164,12 +164,12 @@ public class EnemyMovement : MonoBehaviour
     {
         if (distance < m_AttackDistanceRange)
         {   
-                m_State = EnemyState.AttackingRange;
-            
-        }else if(distance < m_AttackDistanceMelee){
+            if(distance < m_AttackDistanceMelee){
             m_State = EnemyState.AttackingMelee;
-        }
-        else
+            }else{
+                m_State = EnemyState.AttackingRange;
+            }
+        }else
         {
             m_State = EnemyState.Chasing;
         }
