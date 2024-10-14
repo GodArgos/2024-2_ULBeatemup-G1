@@ -44,13 +44,13 @@ public class EnemyMovement : MonoBehaviour
         {
             case EnemyState.Idle:
                 OnIdle();
-            break;
+                break;
             case EnemyState.Chasing:
                 OnChase();
-            break;
+                break;
             case EnemyState.Attacking:
                 OnAttack();
-            break;
+                break;
         }
     }
 

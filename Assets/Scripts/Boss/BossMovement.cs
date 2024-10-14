@@ -24,6 +24,9 @@ public class BossMovement : MonoBehaviour
     [SerializeField]
     private float m_ChargeMaxTime = 5f;
     private bool m_IsCharging = false;
+
+    private bool m_isCinematic = false;
+
     public bool IsCharging
     {
         get
@@ -51,44 +54,47 @@ public class BossMovement : MonoBehaviour
 
     private void Update()
     {
-        // Solo si no tenemos al jugador, lo detectamos
-        if (m_PlayerHitbox == null)
+        if (!m_isCinematic)
         {
-            DetectPlayerHitbox();
-        }
-
-        // Si ya tenemos un jugador detectado
-        if (m_PlayerHitbox != null)
-        {
-            float distance = GetPlayerDistanceToHitboxCenter();
-
-            if (distance > 0f)
+            // Solo si no tenemos al jugador, lo detectamos
+            if (m_PlayerHitbox == null)
             {
-                AttackorChase(distance);
-            }
-            else
-            {
-                m_State = EnemyState.Idle;
+                DetectPlayerHitbox();
             }
 
-            switch (m_State)
+            // Si ya tenemos un jugador detectado
+            if (m_PlayerHitbox != null)
             {
-                case EnemyState.Idle:
-                    OnIdle();
-                    break;
-                case EnemyState.Chasing:
-                    OnChase();
-                    break;
-                case EnemyState.Attacking:
-                    OnAttack();
-                    break;
-            }
-        }
+                float distance = GetPlayerDistanceToHitboxCenter();
 
-        // Verifica el cooldown
-        if (Time.time > m_NextChargeAttackTime)
-        {
-            m_ChargeCooldown = 0f; // El cooldown se ha completado
+                if (distance > 0f)
+                {
+                    AttackorChase(distance);
+                }
+                else
+                {
+                    m_State = EnemyState.Idle;
+                }
+
+                switch (m_State)
+                {
+                    case EnemyState.Idle:
+                        OnIdle();
+                        break;
+                    case EnemyState.Chasing:
+                        OnChase();
+                        break;
+                    case EnemyState.Attacking:
+                        OnAttack();
+                        break;
+                }
+            }
+
+            // Verifica el cooldown
+            if (Time.time > m_NextChargeAttackTime)
+            {
+                m_ChargeCooldown = 0f; // El cooldown se ha completado
+            }
         }
     }
 
@@ -241,6 +247,22 @@ public class BossMovement : MonoBehaviour
         else if (hitboxCenter.x < transform.position.x)
         {
             transform.localScale = new Vector3(1, 1, 1); // Girar a la izquierda
+        }
+    }
+
+    public void Talk()
+    {
+        if (!m_IsTalking)
+        {
+            m_SpriteAnimator.SetTrigger("Talk");
+            m_IsTalking = true;
+            m_isCinematic = true;
+        }
+        else
+        {
+            m_SpriteAnimator.SetTrigger("StopTalk");
+            m_IsTalking = false;
+            m_isCinematic = false;
         }
     }
 
