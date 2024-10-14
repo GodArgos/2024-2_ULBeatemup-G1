@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum BossState
@@ -64,26 +65,12 @@ public class BossMovement : MonoBehaviour
             // Solo si no tenemos al jugador, lo detectamos
             if (m_PlayerHitbox == null)
             {
-                AttackorChase(distance);
-            }
-            else
-            {
-                m_State = BossState.Idle;
+                DetectPlayerHitbox();
             }
 
-            // Si ya tenemos un jugador detectado
             if (m_PlayerHitbox != null)
             {
-                case BossState.Idle:
-                    OnIdle();
-                    break;
-                case BossState.Chasing:
-                    OnChase();
-                    break;
-                case BossState.Attacking:
-                    OnAttack();
-                    break;
-            }
+                float distance = GetPlayerDistanceToHitboxCenter();
 
                 if (distance > 0f)
                 {
@@ -91,29 +78,31 @@ public class BossMovement : MonoBehaviour
                 }
                 else
                 {
-                    m_State = EnemyState.Idle;
+                    m_State = BossState.Idle;
                 }
 
                 switch (m_State)
                 {
-                    case EnemyState.Idle:
+                    case BossState.Idle:
                         OnIdle();
                         break;
-                    case EnemyState.Chasing:
+                    case BossState.Chasing:
                         OnChase();
                         break;
-                    case EnemyState.Attacking:
+                    case BossState.Attacking:
                         OnAttack();
                         break;
                 }
-        }
+            }
 
             // Verifica el cooldown
             if (Time.time > m_NextChargeAttackTime)
             {
                 m_ChargeCooldown = 0f; // El cooldown se ha completado
             }
+        }
     }
+
 
     private void OnIdle()
     {
