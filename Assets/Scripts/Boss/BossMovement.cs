@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BossState
+{
+    Idle, Chasing, Attacking
+}
+
 public class BossMovement : MonoBehaviour
 {
     [SerializeField]
@@ -13,7 +18,7 @@ public class BossMovement : MonoBehaviour
     [SerializeField]
     private Transform m_RaycastGenerator;
 
-    private EnemyState m_State = EnemyState.Idle;
+    private BossState m_State = BossState.Idle;
     private Animator m_SpriteAnimator;
     private bool m_IsTalking = false;
 
@@ -59,13 +64,26 @@ public class BossMovement : MonoBehaviour
             // Solo si no tenemos al jugador, lo detectamos
             if (m_PlayerHitbox == null)
             {
-                DetectPlayerHitbox();
+                AttackorChase(distance);
+            }
+            else
+            {
+                m_State = BossState.Idle;
             }
 
             // Si ya tenemos un jugador detectado
             if (m_PlayerHitbox != null)
             {
-                float distance = GetPlayerDistanceToHitboxCenter();
+                case BossState.Idle:
+                    OnIdle();
+                    break;
+                case BossState.Chasing:
+                    OnChase();
+                    break;
+                case BossState.Attacking:
+                    OnAttack();
+                    break;
+            }
 
                 if (distance > 0f)
                 {
@@ -88,14 +106,13 @@ public class BossMovement : MonoBehaviour
                         OnAttack();
                         break;
                 }
-            }
+        }
 
             // Verifica el cooldown
             if (Time.time > m_NextChargeAttackTime)
             {
                 m_ChargeCooldown = 0f; // El cooldown se ha completado
             }
-        }
     }
 
     private void OnIdle()
@@ -105,7 +122,7 @@ public class BossMovement : MonoBehaviour
 
     private void OnChase()
     {
-        if (m_IsCharging || m_PlayerHitbox == null) // Evitar movimiento mientras está cargando
+        if (m_IsCharging || m_PlayerHitbox == null) // Evitar movimiento mientras estï¿½ cargando
         {
             return;
         }
@@ -114,7 +131,7 @@ public class BossMovement : MonoBehaviour
         Vector3 hitboxCenter = m_PlayerHitbox.bounds.center;
         Vector3 dir = (hitboxCenter - transform.position).normalized;
 
-        // Ajustar la dirección del sprite antes de moverse
+        // Ajustar la direcciï¿½n del sprite antes de moverse
         FlipSprite(hitboxCenter);
 
         transform.position += m_Speed * Time.deltaTime * dir;
@@ -123,33 +140,33 @@ public class BossMovement : MonoBehaviour
 
     private void OnAttack()
     {
-        // Aquí es donde se manejarían los diferentes tipos de ataque
+        // Aquï¿½ es donde se manejarï¿½an los diferentes tipos de ataque
         if (m_IsCharging)
         {
-            // Si está en carga, no hacemos nada
+            // Si estï¿½ en carga, no hacemos nada
             return;
         }
 
-        // Realizar ataque débil
-        Debug.Log("Realizando ataque débil.");
+        // Realizar ataque dï¿½bil
+        Debug.Log("Realizando ataque dï¿½bil.");
         m_SpriteAnimator.SetTrigger("Stop");
         m_SpriteAnimator.SetTrigger("Attack");
     }
 
     private void AttackorChase(float distance)
     {
-        // Solo se permite el ataque cargado si no está en cooldown
+        // Solo se permite el ataque cargado si no estï¿½ en cooldown
         if (!m_IsCharging && m_ChargeCooldown <= 0 && Random.Range(0, 5) == 0) // 20% de probabilidad
         {
             StartCoroutine(ChargeAttack());
         }
         else if (distance < m_AttackDistance)
         {
-            m_State = EnemyState.Attacking;
+            m_State = BossState.Attacking;
         }
         else
         {
-            m_State = EnemyState.Chasing;
+            m_State = BossState.Chasing;
         }
     }
 
@@ -169,13 +186,13 @@ public class BossMovement : MonoBehaviour
             chargeTime -= Time.deltaTime; // Decrementar el tiempo de carga
         }
 
-        // Guardar posición actual del jugador
+        // Guardar posiciï¿½n actual del jugador
         m_ChargePosition = m_PlayerHitbox.bounds.center;
 
         // Cambiar al ataque cargado
         m_SpriteAnimator.SetTrigger("ChargingAttack");
 
-        // Moverse rápidamente hacia la posición del jugador
+        // Moverse rï¿½pidamente hacia la posiciï¿½n del jugador
         float chargeSpeed = 10f; // Puedes ajustar esta velocidad
         while (Vector3.Distance(transform.position, m_ChargePosition) > m_AttackDistance)
         {
@@ -184,15 +201,15 @@ public class BossMovement : MonoBehaviour
             yield return null; // Esperar el siguiente frame
         }
 
-        // Aquí se puede implementar el daño al jugador si lo alcanza
+        // Aquï¿½ se puede implementar el daï¿½o al jugador si lo alcanza
         if (Vector3.Distance(transform.position, m_ChargePosition) <= m_AttackDistance)
         {
-            //m_PlayerHitbox.GetComponent<EnemyHitbox>().Hit(); // Asegúrate de que el script está en el hitbox
+            //m_PlayerHitbox.GetComponent<EnemyHitbox>().Hit(); // Asegï¿½rate de que el script estï¿½ en el hitbox
             Debug.Log("Ataque cargado exitoso.");
         }
         else
         {
-            Debug.Log("El ataque cargado falló.");
+            Debug.Log("El ataque cargado fallï¿½.");
         }
 
         // Calcular y establecer el cooldown
@@ -200,7 +217,7 @@ public class BossMovement : MonoBehaviour
         m_NextChargeAttackTime = Time.time + m_ChargeCooldown;
 
         // Regresar al estado idle
-        m_State = EnemyState.Idle;
+        m_State = BossState.Idle;
         m_IsCharging = false;
     }
 
@@ -232,18 +249,18 @@ public class BossMovement : MonoBehaviour
         }
         else
         {
-            m_PlayerHitbox = null; // No encontró al jugador
+            m_PlayerHitbox = null; // No encontrï¿½ al jugador
         }
     }
 
     private void FlipSprite(Vector3 hitboxCenter)
     {
-        // Si el jugador está a la derecha del enemigo
+        // Si el jugador estï¿½ a la derecha del enemigo
         if (hitboxCenter.x > transform.position.x)
         {
             transform.localScale = new Vector3(-1, 1, 1); // Girar a la derecha
         }
-        // Si el jugador está a la izquierda del enemigo
+        // Si el jugador estï¿½ a la izquierda del enemigo
         else if (hitboxCenter.x < transform.position.x)
         {
             transform.localScale = new Vector3(1, 1, 1); // Girar a la izquierda

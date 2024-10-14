@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum EnemyState
 {
-    Idle, Chasing, Attacking
+    Idle, Chasing, AttackMelee, AttackRange
 }
 
 public class EnemyMovement : MonoBehaviour
@@ -13,7 +13,9 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField]
     private float m_RaycastDistance = 3f;
     [SerializeField]
-    private float m_AttackDistance = 0.5f;
+    private float m_AttackMeleeDistance = 1.5f;
+    [SerializeField]
+    private float m_AttackRangeDistance = 5.0f;
     [SerializeField]
     private float m_Speed = 4f;
     [SerializeField]
@@ -21,8 +23,8 @@ public class EnemyMovement : MonoBehaviour
     private EnemyState m_State = EnemyState.Idle;
     private Animator m_SpriteAnimator;
     private bool m_IsTalking = false;
-
-    private Transform m_Player = null;
+    [SerializeField] private Collider2D m_objectCollider;
+    private Collider2D m_PlayerHitbox = null;
 
     private void Awake() 
     {
@@ -30,94 +32,142 @@ public class EnemyMovement : MonoBehaviour
         //m_RaycastGenerator = transform.Find("RaycastGenerator");
     }
 
-    private void Update() 
+    private void Update()
     {
-        float distance = GetPlayerDistance();
-        if (distance > 0f)
+        // Solo si no tenemos al jugador, lo detectamos
+        if (m_PlayerHitbox == null)
         {
-            AttackorChase(distance);
-        }else{
-            m_State = EnemyState.Idle;
+            DetectPlayerHitbox();
         }
 
-        switch(m_State)
+        // Si ya tenemos un jugador detectado
+        if (m_PlayerHitbox != null)
         {
-            case EnemyState.Idle:
-                OnIdle();
-                break;
-            case EnemyState.Chasing:
-                OnChase();
-                break;
-            case EnemyState.Attacking:
-                OnAttack();
-                break;
+            float distance = GetPlayerDistanceToHitboxCenter();
+
+            if (distance > 0f)
+            {
+                AttackorChase(distance);
+            }
+            else
+            {
+                m_State = EnemyState.Idle;
+            }
+
+            switch (m_State)
+            {
+                case EnemyState.Idle:
+                    OnIdle();
+                    break;
+                case EnemyState.Chasing:
+                    OnChase();
+                    break;
+                case EnemyState.AttackMelee:
+                    OnAttackMelee();
+                    break;
+                case EnemyState.AttackRange:
+                    OnAttackRange();
+                    break;
+            }
         }
     }
 
     private void OnIdle()
-    {}
+    {
+        m_SpriteAnimator.SetTrigger("Stop");
+    }
 
     private void OnChase()
     {
-        if (m_Player == null)
+        if (m_PlayerHitbox == null) // Evitar movimiento mientras est� cargando
         {
             return;
         }
 
-        Vector3 dir = (m_Player.position - transform.position).normalized;
+        // Moverse hacia el centro del collider de la hitbox
+        Vector3 hitboxCenter = m_PlayerHitbox.bounds.center;
+        Vector3 dir = (hitboxCenter - m_objectCollider.bounds.center).normalized;
+
+        // Ajustar la direcci�n del sprite antes de moverse
+        FlipSprite(hitboxCenter);
+
         transform.position += m_Speed * Time.deltaTime * dir;
+        m_SpriteAnimator.SetTrigger("StartWalk");
     }
 
-    private void OnAttack()
-    {}
+    private void OnAttackMelee()
+    {
+        m_SpriteAnimator.SetTrigger("Stop");
+        m_SpriteAnimator.SetTrigger("MeleeAttack");
+    }
 
-    
+    private void OnAttackRange()
+    {
+        m_SpriteAnimator.SetTrigger("Stop");
+        m_SpriteAnimator.SetTrigger("RangeAttack");
+    }
 
     private void AttackorChase(float distance)
     {
-        if (distance < m_AttackDistance)
+        if (distance < m_AttackMeleeDistance)
         {
-            m_State = EnemyState.Attacking;
-        }else
+            m_State = EnemyState.AttackMelee;
+        }
+        else if (distance < m_AttackRangeDistance)
+        {
+            m_State = EnemyState.AttackRange;
+        }
+        else
         {
             m_State = EnemyState.Chasing;
         }
-        
+
     }
 
-    private float GetPlayerDistance()
+    private float GetPlayerDistanceToHitboxCenter()
     {
-        // Lanzas el Raycast
-        var hit = Physics2D.Raycast(
+        if (m_PlayerHitbox != null)
+        {
+            // Calcula la distancia al centro del bounds del collider de la hitbox
+            return Vector3.Distance(m_PlayerHitbox.bounds.center, m_objectCollider.bounds.center);
+        }
+
+        return -1f;
+    }
+
+    private void DetectPlayerHitbox()
+    {
+        // Detecta los colliders en la capa Hitbox dentro del radio
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(
             m_RaycastGenerator.position,
-            Vector2.left,
             m_RaycastDistance,
             LayerMask.GetMask("Hitbox")
         );
-        if (hit.collider != null)
-        {
-            // Hay una colision con player
-            m_Player = hit.collider.transform;
-            Vector3 playerPos = m_Player.position;
-            return Vector3.Distance(playerPos, transform.position);
-        }
 
-        hit = Physics2D.Raycast(
-            m_RaycastGenerator.position,
-            Vector2.right,
-            m_RaycastDistance,
-            LayerMask.GetMask("Hitbox")
-        );
-        if (hit.collider != null)
+        if (hitColliders.Length > 0)
         {
-            // Hay una colision con enemigo
-            m_Player = hit.collider.transform;
-            Vector3 playerPos = m_Player.position;
-            return Vector3.Distance(playerPos, transform.position);
+            // Asignar el primer hitbox detectado a m_PlayerHitbox
+            m_PlayerHitbox = hitColliders[0];
+            Debug.Log("Hitbox del jugador detectada.");
         }
+        else
+        {
+            m_PlayerHitbox = null; // No encontr� al jugador
+        }
+    }
 
-        m_Player = null;
-        return -1;
+    private void FlipSprite(Vector3 hitboxCenter)
+    {
+        // Si el jugador est� a la derecha del enemigo
+        if (hitboxCenter.x > transform.position.x)
+        {
+            transform.localScale = new Vector3(-1, 1, 1); // Girar a la derecha
+        }
+        // Si el jugador est� a la izquierda del enemigo
+        else if (hitboxCenter.x < transform.position.x)
+        {
+            transform.localScale = new Vector3(1, 1, 1); // Girar a la izquierda
+        }
     }
 
     public void Talk()
@@ -133,16 +183,16 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos() 
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawRay(
-            m_RaycastGenerator.position,
-            Vector2.left * m_RaycastDistance
-        );
-        Gizmos.DrawRay(
-            m_RaycastGenerator.position,
-            Vector2.right * m_RaycastDistance
-        );
+        Gizmos.DrawWireSphere(m_RaycastGenerator.position, m_RaycastDistance);
+
+        if (m_PlayerHitbox != null)
+        {
+            // Dibuja l�neas para representar las distancias en los ejes X y Y
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(m_objectCollider.bounds.center, m_PlayerHitbox.bounds.center);
+        }
     }
 }
