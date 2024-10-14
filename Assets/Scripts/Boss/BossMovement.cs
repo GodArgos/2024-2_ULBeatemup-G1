@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BossState
+{
+    Idle, Chasing, Attacking
+}
+
 public class BossMovement : MonoBehaviour
 {
     [SerializeField]
@@ -13,7 +18,7 @@ public class BossMovement : MonoBehaviour
     [SerializeField]
     private Transform m_RaycastGenerator;
 
-    private EnemyState m_State = EnemyState.Idle;
+    private BossState m_State = BossState.Idle;
     private Animator m_SpriteAnimator;
     private bool m_IsTalking = false;
 
@@ -68,18 +73,18 @@ public class BossMovement : MonoBehaviour
             }
             else
             {
-                m_State = EnemyState.Idle;
+                m_State = BossState.Idle;
             }
 
             switch (m_State)
             {
-                case EnemyState.Idle:
+                case BossState.Idle:
                     OnIdle();
                     break;
-                case EnemyState.Chasing:
+                case BossState.Chasing:
                     OnChase();
                     break;
-                case EnemyState.Attacking:
+                case BossState.Attacking:
                     OnAttack();
                     break;
             }
@@ -139,11 +144,11 @@ public class BossMovement : MonoBehaviour
         }
         else if (distance < m_AttackDistance)
         {
-            m_State = EnemyState.Attacking;
+            m_State = BossState.Attacking;
         }
         else
         {
-            m_State = EnemyState.Chasing;
+            m_State = BossState.Chasing;
         }
     }
 
@@ -194,7 +199,7 @@ public class BossMovement : MonoBehaviour
         m_NextChargeAttackTime = Time.time + m_ChargeCooldown;
 
         // Regresar al estado idle
-        m_State = EnemyState.Idle;
+        m_State = BossState.Idle;
         m_IsCharging = false;
     }
 
