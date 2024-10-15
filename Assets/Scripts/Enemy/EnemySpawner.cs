@@ -10,7 +10,11 @@ public class EnemySpawner : MonoBehaviour
     public float spawnInterval = 3f; // Tiempo entre cada spawn
     private bool spawnerActive = false; // Controla si el spawner está activo
     private int enemiesSpawned = 0; // Contador de enemigos generados
+    private int enemiesDefeated = 0; //Contador de enemigos derrotados
     public int maxEnemies = 3; // Máximo número de enemigos a generar
+
+    [SerializeField]
+    private PolygonCollider2D originalBounds;
 
     private void Start()
     {
@@ -56,5 +60,33 @@ public class EnemySpawner : MonoBehaviour
 
         Vector2 spawnPosition = new Vector2(randomX, yPosition);
         Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+    }
+
+     // Llamar a este método desde el script del enemigo cuando muera
+    public void EnemyDefeated()
+    {
+        enemiesDefeated++;
+
+        // Si todos los enemigos han sido derrotados
+        if (enemiesDefeated >= maxEnemies + 1)
+        {
+            ResetAfterBattle();
+        }
+    }
+
+    private void ResetAfterBattle()
+    {
+        // Cambiar los bounds de la cámara a los originales
+        GameManager.Instance.ChangeBounds(originalBounds);
+
+        // Desactivar los colliders de la zona
+        if (leftCollider != null)
+        {
+            leftCollider.enabled = false;
+        }
+        if (rightCollider != null)
+        {
+            rightCollider.enabled = false;
+        }
     }
 }

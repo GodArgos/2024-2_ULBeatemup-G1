@@ -2028,7 +2028,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1144427162}
   - component: {fileID: 1144427161}
-  - component: {fileID: 1144427163}
   m_Layer: 0
   m_Name: EnemySpawner
   m_TagString: Untagged
@@ -2051,8 +2050,9 @@ MonoBehaviour:
   enemyPrefab: {fileID: 3398689924992604862, guid: 7f5d5b04ce40a644b90588c922917a42, type: 3}
   leftCollider: {fileID: 1910835785}
   rightCollider: {fileID: 829244003}
-  spawnInterval: 10
+  spawnInterval: 15
   maxEnemies: 3
+  originalBounds: {fileID: 522088963}
 --- !u!4 &1144427162
 Transform:
   m_ObjectHideFlags: 0
@@ -2068,36 +2068,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1144427163
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1144427160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Events:
-    m_Signals:
-    - {fileID: 11400000, guid: dc3340c7edd29ea4685ce1e91613b7ee, type: 2}
-    m_Events:
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1144427161}
-          m_TargetAssemblyTypeName: EnemySpawner, Assembly-CSharp
-          m_MethodName: ActivateSpawner
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 1
 --- !u!1 &1280064717
 GameObject:
   m_ObjectHideFlags: 0

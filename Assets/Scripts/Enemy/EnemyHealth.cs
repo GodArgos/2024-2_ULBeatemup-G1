@@ -39,6 +39,12 @@ public class EnemyHealth : MonoBehaviour
 
     public void Die()
     {
+        // Informar al spawner que un enemigo ha sido derrotado
+        EnemySpawner spawner = FindObjectOfType<EnemySpawner>();
+        if (spawner != null)
+        {
+            spawner.EnemyDefeated();
+        }
         Destroy(gameObject);
     }
 }
