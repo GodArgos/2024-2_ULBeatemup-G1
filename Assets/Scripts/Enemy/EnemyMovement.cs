@@ -102,13 +102,12 @@ public class EnemyMovement : MonoBehaviour
     { 
         Debug.Log("Ataque Range");
         m_SpriteAnimator.SetTrigger("RangeAttack");
-        Instantiate(shurikken, transform.position, Quaternion.identity);
         GameObject shurikkenInstance = Instantiate(shurikken, transform.position, Quaternion.identity);
          // Mover el shurikken
         if (shurikkenInstance != null)
         {
         // Esto moverá el shurikken 
-            StartCoroutine(MoveShurikken(shurikkenInstance));
+            MoveShurikken(shurikkenInstance);
         }
         
         var hit = Physics2D.Raycast(
@@ -122,7 +121,7 @@ public class EnemyMovement : MonoBehaviour
             // Hay una colision con enemigo
             float daño = UnityEngine.Random.Range(0.01f, 0.03f); 
             playerHealth.health -= daño;
-            Debug.Log("Vida Enemigo: " + playerHealth.health);
+            Debug.Log("Vida Jugador: " + playerHealth.health);
         }
         
     }
@@ -130,35 +129,26 @@ public class EnemyMovement : MonoBehaviour
     // Método para mover el shurikken
     // Método para mover el shurikken
     private IEnumerator MoveShurikken(GameObject shurikken)
-    {
-        // Determina la dirección hacia la que está mirando el enemigo (hacia la derecha o izquierda)
-        Vector3 direction;
-        if(transform.localScale.x > 0){
-            direction = transform.right;
-        }else{
-            direction = -transform.right;
-        }
+{
+    // Obtener el Rigidbody2D del shuriken
+        Rigidbody2D shurikkenIns = shurikken.GetComponent<Rigidbody2D>();
+        shurikkenIns.gravityScale = 0f;  // Si no quieres que la gravedad afecte al shuriken
 
-        // Mueve el shurikken a lo largo de la dirección con velocidad
-        float lifetime = 2f;  // Tiempo que durará el shurikken antes de destruirse
+        // Determina la dirección según hacia dónde mira el enemigo
+        Vector3 direction = transform.localScale.x > 0 ? Vector3.right : Vector3.left;
 
-        while (shurikken != null)
-        {
-            // Mover el shurikken constantemente en la dirección elegida
-            shurikken.transform.Translate(direction * m_Speed * Time.deltaTime);
-            
-            // Reducir el tiempo de vida del shurikken
-            lifetime -= Time.deltaTime;
-            
-            if (lifetime <= 0f)
-            {
-                Destroy(shurikken); // Destruir el shurikken después de un tiempo
-                break;
-            }
+        // Ajustar la velocidad del shuriken (puedes cambiar el valor de 10f según lo necesites)
+        float launchSpeed = 2f;
 
-            yield return null; // Esperar un frame antes de moverlo de nuevo
-        }
-    }
+        // Aplicar velocidad instantánea
+        shurikkenIns.velocity = direction * launchSpeed;
+        shurikkenIns.AddForce(direction*m_Speed);
+        // Esperar un tiempo antes de destruir el shuriken (si lo deseas)
+        yield return new WaitForSeconds(4f);
+        
+        Destroy(shurikken);  // Destruir el shuriken después de 4 segundos (o el tiempo que decidas)
+}
+
 
     private void AttackorChase(float distance)
     {
