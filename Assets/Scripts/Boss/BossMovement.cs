@@ -33,6 +33,10 @@ public class BossMovement : MonoBehaviour
 
     private bool m_isCinematic = false;
 
+    [SerializeField]
+    private Transform healthBar;
+
+
     public bool IsCharging
     {
         get
@@ -248,11 +252,13 @@ public class BossMovement : MonoBehaviour
         if (hitboxCenter.x > transform.position.x)
         {
             transform.localScale = new Vector3(-1, 1, 1); // Girar a la derecha
+            healthBar.transform.localScale = new Vector3(-1, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
         }
         // Si el jugador est� a la izquierda del enemigo
         else if (hitboxCenter.x < transform.position.x)
         {
             transform.localScale = new Vector3(1, 1, 1); // Girar a la izquierda
+            healthBar.transform.localScale = new Vector3(1, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
         }
     }
 

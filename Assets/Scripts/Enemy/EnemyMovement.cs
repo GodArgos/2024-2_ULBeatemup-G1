@@ -26,6 +26,9 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private Collider2D m_objectCollider;
     private Collider2D m_PlayerHitbox = null;
 
+    [SerializeField]
+    private Transform healthBar;
+
     private void Awake() 
     {
         m_SpriteAnimator = transform.Find("Sprite").GetComponent<Animator>();
@@ -162,11 +165,13 @@ public class EnemyMovement : MonoBehaviour
         if (hitboxCenter.x > transform.position.x)
         {
             transform.localScale = new Vector3(-1, 1, 1); // Girar a la derecha
+            healthBar.transform.localScale = new Vector3(-1, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
         }
         // Si el jugador est� a la izquierda del enemigo
         else if (hitboxCenter.x < transform.position.x)
         {
             transform.localScale = new Vector3(1, 1, 1); // Girar a la izquierda
+            healthBar.transform.localScale = new Vector3(1, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
         }
     }
 

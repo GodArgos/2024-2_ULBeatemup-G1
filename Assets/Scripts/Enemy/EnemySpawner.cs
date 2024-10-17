@@ -16,6 +16,9 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField]
     private PolygonCollider2D originalBounds;
 
+    [SerializeField]
+    public playerHealth pHealth;
+
     private void Start()
     {
         // Desactiva los colliders al inicio, ya que la zona no está activa aún
@@ -59,7 +62,13 @@ public class EnemySpawner : MonoBehaviour
         float yPosition = leftCollider.bounds.center.y;
 
         Vector2 spawnPosition = new Vector2(randomX, yPosition);
-        Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        var newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        EnemyDamage enemyDamage = newEnemy.GetComponent<EnemyDamage>();
+        if (enemyDamage != null)
+        {
+            enemyDamage.pHealth = pHealth;
+        }
+
     }
 
      // Llamar a este método desde el script del enemigo cuando muera
