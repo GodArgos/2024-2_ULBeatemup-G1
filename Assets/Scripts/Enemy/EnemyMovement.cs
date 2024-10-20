@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,16 +19,19 @@ public class EnemyMovement : MonoBehaviour
     private float m_Speed = 4f;
     [SerializeField]
     private Transform m_RaycastGenerator;
-    private EnemyState  m_State= EnemyState.Idle;
+    [SerializeField]
+    private float shurikkenCooldown = 1.5f;  // Tiempo entre lanzamientos
+
+    private EnemyState m_State = EnemyState.Idle;
     private Animator m_SpriteAnimator;
     public GameObject shurikken;
     private bool m_IsTalking = false;
-
+    private bool canThrowShurikken = true;  // Controla cuándo el enemigo puede lanzar el shuriken
     private Transform m_Player = null;
     EnemyHealth enemyHealth;
     playerHealth playerHealth;
     
-    public int TypeAttack; //0 = Melee and 1 = Range
+    public int TypeAttack; // 0 = Melee, 1 = Range
     
     private void Awake() 
     {
@@ -37,7 +39,6 @@ public class EnemyMovement : MonoBehaviour
         enemyHealth = GetComponent<EnemyHealth>();
         playerHealth = GetComponent<playerHealth>();
         shurikken.SetActive(false);
-        //m_RaycastGenerator = transform.Find("RaycastGenerator");
     }
 
     private void Update() 
@@ -46,7 +47,9 @@ public class EnemyMovement : MonoBehaviour
         if (distance > 0f)
         {
             AttackorChase(distance);
-        }else{
+        }
+        else
+        {
             m_State = EnemyState.Idle;
         }
 
@@ -54,21 +57,20 @@ public class EnemyMovement : MonoBehaviour
         {
             case EnemyState.Idle:
                 OnIdle();
-            break;
+                break;
             case EnemyState.Chasing:
                 OnChase();
-            break;
+                break;
             case EnemyState.AttackingMelee:
                 OnAttackMelee();
-            break;
+                break;
             case EnemyState.AttackingRange:
                 OnAttackRange();
-            break;
+                break;
         }
     }
 
-    private void OnIdle()
-    {}
+    private void OnIdle() {}
 
     private void OnChase()
     {
@@ -83,89 +85,100 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnAttackMelee()
     {
-
         Debug.Log("Ataque Melee");
         m_SpriteAnimator.SetTrigger("MeleeAttack");
         TypeAttack = 0;
-                   
     }
 
     private void OnTriggerEnter(Collider other)
     {   
         float daño;
-        if(TypeAttack == 0){
+        if (TypeAttack == 0)
+        {
             daño = UnityEngine.Random.Range(0.04f, 0.08f);
-        }else{
+        }
+        else
+        {
             daño = 0;
         }
 
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
             playerHealth.health -= daño;
             Debug.Log("Vida Jugador: " + playerHealth.health);
         }
     }
 
-     private void OnAttackRange()
-    { 
-        Debug.Log("Ataque Range");
+    private void OnAttackRange()
+    {
+        Debug.Log("Ataque Rango");
         m_SpriteAnimator.SetTrigger("RangeAttack");
         TypeAttack = 1;
-        
-         // Mover el shurikken
+
+        // Iniciar el lanzamiento de shurikens solo si el cooldown lo permite
+        if (canThrowShurikken)
+        {
+            StartCoroutine(ThrowShurikkenRepeatedly());
+        }
+    }
+
+    // Corutina para lanzar shurikken repetidamente
+    private IEnumerator ThrowShurikkenRepeatedly()
+    {
+        canThrowShurikken = false; // Bloquea nuevos lanzamientos hasta que se complete el cooldown
+
+        // Mueve y lanza el shuriken
         if (shurikken != null)
         {
             shurikken.SetActive(true);
-        // Esto moverá el shurikken 
-           MoveShurikken(shurikken);
+            MoveShurikken(shurikken);
         }
-        
+
+        // Esperar antes del próximo lanzamiento
+        yield return new WaitForSeconds(shurikkenCooldown);
+
+        canThrowShurikken = true; // Habilita los lanzamientos nuevamente
     }
 
     // Método para mover el shurikken
-    // Método para mover el shurikken
     private void MoveShurikken(GameObject shurikken)
-{
-    // Obtener el Rigidbody2D del shuriken
-    Rigidbody2D shurikkenIns = shurikken.GetComponent<Rigidbody2D>();
-    
-    // Desactivar la gravedad para que el shuriken no caiga
-    shurikkenIns.gravityScale = 0f;
+    {
+        // Obtener el Rigidbody2D del shuriken
+        Rigidbody2D shurikkenIns = shurikken.GetComponent<Rigidbody2D>();
 
-    // Determinar la dirección según hacia dónde está mirando el enemigo (localScale.x)
-    // Si la escala en X es positiva, el enemigo mira a la derecha, si es negativa, a la izquierda
-    Vector2 direction = transform.localScale.x > 0 ? Vector2.right : Vector2.left;
+        // Desactivar la gravedad para que el shuriken no caiga
+        shurikkenIns.gravityScale = 0f;
 
-    // Ajustar la fuerza del shuriken
-    float launchForce = 20f;  // Puedes ajustar este valor según la fuerza deseada
+        // Determinar la dirección basada en la posición del jugador
+        Vector2 direction = m_Player.position.x < transform.position.x ? Vector2.left : Vector2.right;
 
-    // Limpiar la velocidad actual antes de aplicar la nueva fuerza
-    shurikkenIns.velocity = Vector2.zero;
+        // Ajustar la fuerza del shuriken
+        float launchForce = 20f;
 
-    // Aplicar la fuerza instantáneamente en la dirección correcta
-    shurikkenIns.AddForce(direction * launchForce, ForceMode2D.Impulse);
+        // Limpiar la velocidad actual antes de aplicar la nueva fuerza
+        shurikkenIns.velocity = Vector2.zero;
 
-    // Si deseas destruir el shuriken después de un tiempo (esto es opcional)
-    //Destroy(shurikken, 2f);  // Destruir el shuriken después de 2 segundos (ajusta el tiempo si es necesario)
-}
-
-
-
+        // Aplicar la fuerza instantáneamente en la dirección correcta
+        shurikkenIns.AddForce(direction * launchForce, ForceMode2D.Impulse);
+    }
 
     private void AttackorChase(float distance)
     {
         if (distance < m_AttackDistanceRange)
         {   
-            if(distance < m_AttackDistanceMelee){
-            m_State = EnemyState.AttackingMelee;
-            }else{
+            if (distance < m_AttackDistanceMelee)
+            {
+                m_State = EnemyState.AttackingMelee;
+            }
+            else
+            {
                 m_State = EnemyState.AttackingRange;
             }
-        }else
+        }
+        else
         {
             m_State = EnemyState.Chasing;
         }
-        
     }
 
     private float GetPlayerDistance()
@@ -179,7 +192,7 @@ public class EnemyMovement : MonoBehaviour
         );
         if (hit.collider != null)
         {
-            // Hay una colision con player
+            // Hay una colision con el jugador
             m_Player = hit.collider.transform;
             Vector3 playerPos = m_Player.position;
             return Vector3.Distance(playerPos, transform.position);
@@ -193,7 +206,6 @@ public class EnemyMovement : MonoBehaviour
         );
         if (hit.collider != null)
         {
-            // Hay una colision con enemigo
             m_Player = hit.collider.transform;
             Vector3 playerPos = m_Player.position;
             return Vector3.Distance(playerPos, transform.position);
@@ -201,19 +213,6 @@ public class EnemyMovement : MonoBehaviour
 
         m_Player = null;
         return -1;
-    }
-
-    public void Talk()
-    {
-        if (!m_IsTalking)
-        {
-            m_SpriteAnimator.SetTrigger("Talk");
-            m_IsTalking = true;
-        }else
-        {
-            m_SpriteAnimator.SetTrigger("StopTalk");
-            m_IsTalking = false;
-        }
     }
 
     private void OnDrawGizmos() 
