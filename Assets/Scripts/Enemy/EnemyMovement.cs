@@ -28,13 +28,15 @@ public class EnemyMovement : MonoBehaviour
     private Transform m_Player = null;
     EnemyHealth enemyHealth;
     playerHealth playerHealth;
-  
-
+    
+    public int TypeAttack; //0 = Melee and 1 = Range
+    
     private void Awake() 
     {
         m_SpriteAnimator = transform.Find("Sprite").GetComponent<Animator>();
         enemyHealth = GetComponent<EnemyHealth>();
         playerHealth = GetComponent<playerHealth>();
+        shurikken.SetActive(false);
         //m_RaycastGenerator = transform.Find("RaycastGenerator");
     }
 
@@ -81,73 +83,73 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnAttackMelee()
     {
+
         Debug.Log("Ataque Melee");
         m_SpriteAnimator.SetTrigger("MeleeAttack");
-        float daño = UnityEngine.Random.Range(0.04f, 0.08f);
-            var hit = Physics2D.Raycast(
-            m_RaycastGenerator.position,
-            Vector2.left,
-            m_RaycastDistance,
-            LayerMask.GetMask("Hitbox"));
-            if (hit.collider != null)
-            {
-            // Hay una colision con player
-                playerHealth.health -= daño;
-                Debug.Log("Vida Jugador: " + playerHealth.health);
-            }
+        TypeAttack = 0;
                    
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {   
+        float daño;
+        if(TypeAttack == 0){
+            daño = UnityEngine.Random.Range(0.04f, 0.08f);
+        }else{
+            daño = 0;
+        }
+
+        if(other.CompareTag("Player"))
+        {
+            playerHealth.health -= daño;
+            Debug.Log("Vida Jugador: " + playerHealth.health);
+        }
     }
 
      private void OnAttackRange()
     { 
         Debug.Log("Ataque Range");
         m_SpriteAnimator.SetTrigger("RangeAttack");
-        GameObject shurikkenInstance = Instantiate(shurikken, transform.position, Quaternion.identity);
-         // Mover el shurikken
-        if (shurikkenInstance != null)
-        {
-        // Esto moverá el shurikken 
-            MoveShurikken(shurikkenInstance);
-        }
+        TypeAttack = 1;
         
-        var hit = Physics2D.Raycast(
-            m_RaycastGenerator.position,
-            Vector2.right,
-            m_RaycastDistance,
-            LayerMask.GetMask("Hitbox")
-        );
-        if (hit.collider != null)
+         // Mover el shurikken
+        if (shurikken != null)
         {
-            // Hay una colision con enemigo
-            float daño = UnityEngine.Random.Range(0.01f, 0.03f); 
-            playerHealth.health -= daño;
-            Debug.Log("Vida Jugador: " + playerHealth.health);
+            shurikken.SetActive(true);
+        // Esto moverá el shurikken 
+           MoveShurikken(shurikken);
         }
         
     }
 
     // Método para mover el shurikken
     // Método para mover el shurikken
-    private IEnumerator MoveShurikken(GameObject shurikken)
+    private void MoveShurikken(GameObject shurikken)
 {
     // Obtener el Rigidbody2D del shuriken
-        Rigidbody2D shurikkenIns = shurikken.GetComponent<Rigidbody2D>();
-        shurikkenIns.gravityScale = 0f;  // Si no quieres que la gravedad afecte al shuriken
+    Rigidbody2D shurikkenIns = shurikken.GetComponent<Rigidbody2D>();
+    
+    // Desactivar la gravedad para que el shuriken no caiga
+    shurikkenIns.gravityScale = 0f;
 
-        // Determina la dirección según hacia dónde mira el enemigo
-        Vector3 direction = transform.localScale.x > 0 ? Vector3.right : Vector3.left;
+    // Determinar la dirección según hacia dónde está mirando el enemigo (localScale.x)
+    // Si la escala en X es positiva, el enemigo mira a la derecha, si es negativa, a la izquierda
+    Vector2 direction = transform.localScale.x > 0 ? Vector2.right : Vector2.left;
 
-        // Ajustar la velocidad del shuriken (puedes cambiar el valor de 10f según lo necesites)
-        float launchSpeed = 2f;
+    // Ajustar la fuerza del shuriken
+    float launchForce = 20f;  // Puedes ajustar este valor según la fuerza deseada
 
-        // Aplicar velocidad instantánea
-        shurikkenIns.velocity = direction * launchSpeed;
-        shurikkenIns.AddForce(direction*m_Speed);
-        // Esperar un tiempo antes de destruir el shuriken (si lo deseas)
-        yield return new WaitForSeconds(4f);
-        
-        Destroy(shurikken);  // Destruir el shuriken después de 4 segundos (o el tiempo que decidas)
+    // Limpiar la velocidad actual antes de aplicar la nueva fuerza
+    shurikkenIns.velocity = Vector2.zero;
+
+    // Aplicar la fuerza instantáneamente en la dirección correcta
+    shurikkenIns.AddForce(direction * launchForce, ForceMode2D.Impulse);
+
+    // Si deseas destruir el shuriken después de un tiempo (esto es opcional)
+    //Destroy(shurikken, 2f);  // Destruir el shuriken después de 2 segundos (ajusta el tiempo si es necesario)
 }
+
+
 
 
     private void AttackorChase(float distance)
