@@ -34,11 +34,6 @@ public class CutsceneController : MonoBehaviour
             m_PlayableDirector.playableAsset = m_Cutscene;
             m_PlayableDirector.Play();
 
-            // if(enemySpawner != null)
-            // {
-            //     enemySpawner.ActivateSpawner(); // Activa el spawner después de la cutscene
-            // }
-
             // Suscribirse al evento 'stopped' del PlayableDirector para cuando termine la cutscene
             m_PlayableDirector.stopped += OnPlayableDirectorStopped;
 

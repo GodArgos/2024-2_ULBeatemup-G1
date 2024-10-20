@@ -59,9 +59,11 @@ public class EnemySpawner : MonoBehaviour
         float minX = leftCollider.bounds.max.x;
         float maxX = rightCollider.bounds.min.x;
         float randomX = Random.Range(minX, maxX);
-        float yPosition = leftCollider.bounds.center.y;
+        // float yPosition = leftCollider.bounds.center.y;
+        // Generar un valor aleatorio para la coordenada Y entre 0 y -5
+        float randomY = Random.Range(0f, -5f);
 
-        Vector2 spawnPosition = new Vector2(randomX, yPosition);
+        Vector2 spawnPosition = new Vector2(randomX, randomY);
         var newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         EnemyDamage enemyDamage = newEnemy.GetComponent<EnemyDamage>();
         if (enemyDamage != null)
@@ -71,7 +73,7 @@ public class EnemySpawner : MonoBehaviour
 
     }
 
-     // Llamar a este método desde el script del enemigo cuando muera
+    // Llamar a este método desde el script del enemigo cuando muera
     public void EnemyDefeated()
     {
         enemiesDefeated++;
@@ -88,14 +90,28 @@ public class EnemySpawner : MonoBehaviour
         // Cambiar los bounds de la cámara a los originales
         GameManager.Instance.ChangeBounds(originalBounds);
 
-        // Desactivar los colliders de la zona
+        // Desactivar los colliders de la zona y sus renderers
         if (leftCollider != null)
         {
             leftCollider.enabled = false;
+
+            // Desactivar el renderer del collider izquierdo
+            var leftRenderer = leftCollider.GetComponent<Renderer>();
+            if (leftRenderer != null)
+            {
+                leftRenderer.enabled = false;
+            }
         }
         if (rightCollider != null)
         {
             rightCollider.enabled = false;
+
+            // Desactivar el renderer del collider derecho
+            var rightRenderer = rightCollider.GetComponent<Renderer>();
+            if (rightRenderer != null)
+            {
+                rightRenderer.enabled = false;
+            }
         }
     }
 }
