@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 m_InitialPos;
 
     private Rigidbody2D m_SpriteRb;
+    private Rigidbody2D m_FloorRb;
     private Vector2 m_Velocity = Vector2.zero;
     private AudioSource m_AudioSource;
 
@@ -36,7 +37,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        m_SpriteRb = transform.Find("Sprite").GetComponent<Rigidbody2D>();
+        m_SpriteRb = GetComponent<Rigidbody2D>();
+        //m_FloorRb = transform.Find("Floor").GetComponent<Rigidbody2D>();
         m_SpriteAnimator = transform.Find("Sprite").GetComponent<Animator>();
         m_AudioSource = GetComponent<AudioSource>();
     }
@@ -50,12 +52,16 @@ public class PlayerMovement : MonoBehaviour
     {
         if (movX < 0 && m_IsFacingRight)
         {
-            transform.rotation *= Quaternion.Euler(0f, 180f, 0f);
+            //transform.rotation *= Quaternion.Euler(0f, 180f, 0f);
+            var sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+            sprite.flipX = true;
             m_IsFacingRight = !m_IsFacingRight;
         }
         if (movX > 0 && !m_IsFacingRight)
         {
-            transform.rotation *= Quaternion.Euler(0f, -180f, 0f);
+            //transform.rotation *= Quaternion.Euler(0f, -180f, 0f);
+            var sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+            sprite.flipX = false;
             m_IsFacingRight = !m_IsFacingRight;
         }
 
@@ -83,7 +89,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        transform.position += (Vector3)(m_Velocity * Time.deltaTime);
+        //transform.position += (Vector3)(m_Velocity * Time.deltaTime);
+        m_SpriteRb.velocity = m_Velocity;
     }
 
     private void FixedUpdate()
