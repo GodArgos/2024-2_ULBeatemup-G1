@@ -109,59 +109,71 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-    private void OnAttackRange()
-    {
-        Debug.Log("Ataque Rango");
-        m_SpriteAnimator.SetTrigger("RangeAttack");
-        TypeAttack = 1;
+   private void OnAttackRange()
+{
+    Debug.Log("Ataque Rango");
+    m_SpriteAnimator.SetTrigger("RangeAttack");
+    TypeAttack = 1;
 
-        // Iniciar el lanzamiento de shurikens solo si el cooldown lo permite
-        if (canThrowShurikken)
-        {
-            StartCoroutine(ThrowShurikkenRepeatedly());
-        }
+    // Iniciar el lanzamiento de shurikens solo si el cooldown lo permite
+    if (canThrowShurikken)
+    {
+        StartCoroutine(ThrowShurikkenRepeatedly());
     }
+}
 
-    // Corutina para lanzar shurikken repetidamente
-    private IEnumerator ThrowShurikkenRepeatedly()
+// Corutina para lanzar shurikken repetidamente
+private IEnumerator ThrowShurikkenRepeatedly()
+{
+    canThrowShurikken = false; // Bloquea nuevos lanzamientos hasta que se complete el cooldown
+
+    while (m_State == EnemyState.AttackingRange) // Mientras esté en el estado de ataque a rango
     {
-        canThrowShurikken = false; // Bloquea nuevos lanzamientos hasta que se complete el cooldown
-
         // Mueve y lanza el shuriken
         if (shurikken != null)
         {
-            shurikken.SetActive(true);
-            MoveShurikken(shurikken);
+            GameObject shurikkenInstance = Instantiate(shurikken, transform.position, Quaternion.identity);  // Instancia un nuevo shurikken
+            shurikkenInstance.SetActive(true); // Asegúrate de activar el shuriken
+            MoveShurikken(shurikkenInstance); // Mueve el shuriken
+            StartCoroutine(DestroyShurikkenAfterTime(shurikkenInstance, 3f)); // Destruye después de 3 segundos (ajustable)
         }
 
-        // Esperar antes del próximo lanzamiento
+        // Espera el tiempo de cooldown antes de lanzar nuevamente
         yield return new WaitForSeconds(shurikkenCooldown);
-
-        canThrowShurikken = true; // Habilita los lanzamientos nuevamente
     }
 
-    // Método para mover el shurikken
-    private void MoveShurikken(GameObject shurikken)
-    {
-        // Obtener el Rigidbody2D del shuriken
-        Rigidbody2D shurikkenIns = shurikken.GetComponent<Rigidbody2D>();
+    // Después de salir del estado, se habilita el lanzamiento nuevamente
+    canThrowShurikken = true;
+}
 
-        // Desactivar la gravedad para que el shuriken no caiga
-        shurikkenIns.gravityScale = 0f;
+// Corutina para destruir el shurikken después de un tiempo
+private IEnumerator DestroyShurikkenAfterTime(GameObject shurikken, float timeToDestroy)
+{
+    yield return new WaitForSeconds(timeToDestroy); // Espera el tiempo determinado
+    Destroy(shurikken); // Destruye el shurikken al final de su tiempo de vida
+}
 
-        // Determinar la dirección basada en la posición del jugador
-        Vector2 direction = m_Player.position.x < transform.position.x ? Vector2.left : Vector2.right;
+// Método para mover el shurikken
+private void MoveShurikken(GameObject shurikkenInstance)
+{
+    // Obtener el Rigidbody2D del shuriken
+    Rigidbody2D shurikkenIns = shurikkenInstance.GetComponent<Rigidbody2D>();
 
-        // Ajustar la fuerza del shuriken
-        float launchForce = 20f;
+    // Desactivar la gravedad para que el shuriken no caiga
+    shurikkenIns.gravityScale = 0f;
 
-        // Limpiar la velocidad actual antes de aplicar la nueva fuerza
-        shurikkenIns.velocity = Vector2.zero;
+    // Determinar la dirección basada en la posición del jugador
+    Vector2 direction = m_Player.position.x < transform.position.x ? Vector2.left : Vector2.right;
 
-        // Aplicar la fuerza instantáneamente en la dirección correcta
-        shurikkenIns.AddForce(direction * launchForce, ForceMode2D.Impulse);
-    }
+    // Ajustar la fuerza del shuriken
+    float launchForce = 20f;
 
+    // Limpiar la velocidad actual antes de aplicar la nueva fuerza
+    shurikkenIns.velocity = Vector2.zero;
+
+    // Aplicar la fuerza instantáneamente en la dirección correcta
+    shurikkenIns.AddForce(direction * launchForce, ForceMode2D.Impulse);
+}
     private void AttackorChase(float distance)
     {
         if (distance < m_AttackDistanceRange)
