@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;  // Para reiniciar el nivel
 
 public class CutSceneBoss : MonoBehaviour
 {
+    [SerializeField] private PlayerMovement m_PlayerMovement;
     [SerializeField] private PlayableDirector m_PlayableDirector;
     [SerializeField] private PlayableAsset m_Cutscene;
     [SerializeField] private float restartDelay = 5f;  // Tiempo de espera para reiniciar el juego
@@ -31,6 +32,8 @@ public class CutSceneBoss : MonoBehaviour
         // Asignar la cinemática al PlayableDirector y reproducirla
         m_PlayableDirector.playableAsset = m_Cutscene;
         m_PlayableDirector.Play();
+
+        m_PlayerMovement.Celebrate();
 
         // Suscribirse al evento 'stopped' del PlayableDirector para cuando termine la cinemática
         m_PlayableDirector.stopped += OnPlayableDirectorStopped;

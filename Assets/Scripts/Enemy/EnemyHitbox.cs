@@ -12,12 +12,12 @@ public class EnemyHitbox : MonoBehaviour, IHitbox
 
 
 
-    public void Hit()
+    public void Hit(float optionalDamage )
     {
         var light = m_EnemyAnimator.
             gameObject.transform.Find("Light");;
         light.gameObject.SetActive(true);
-        enemyHealth.TakeDamage(damageAmount);
+        enemyHealth.TakeDamage(damageAmount != 0 ? damageAmount : optionalDamage);
         m_EnemyAnimator.SetTrigger("ReceiveAttack");
     }
 }

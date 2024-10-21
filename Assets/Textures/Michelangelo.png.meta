@@ -2431,9 +2431,9 @@ TextureImporter:
         x: 164
         y: 831
         width: 44
-        height: 58
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 63
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -2450,11 +2450,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 216
-        y: 833
+        y: 831
         width: 45
         height: 61
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -3103,9 +3103,9 @@ TextureImporter:
         x: 19
         y: 308
         width: 38
-        height: 45
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 83
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -3122,11 +3122,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 65
-        y: 327
+        y: 304
         width: 39
-        height: 60
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 83
+      alignment: 9
+      pivot: {x: 0.7, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -3155,27 +3155,6 @@ TextureImporter:
       bones: []
       spriteID: f89ca4cf52d205c439fc53a5b49f2290
       internalID: 1112289234
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Michelangelo_144
-      rect:
-        serializedVersion: 2
-        x: 77
-        y: 303
-        width: 27
-        height: 14
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f107ec268a410104289db918401d3d0f
-      internalID: 1163377885
       vertices: []
       indices: 
       edges: []

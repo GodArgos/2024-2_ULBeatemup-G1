@@ -84,6 +84,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4616291927637896748}
+  - component: {fileID: 1820100996755185250}
   - component: {fileID: 7145553773790442040}
   - component: {fileID: 2882860451673377836}
   m_Layer: 0
@@ -107,10 +108,24 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2354538825425132099}
+  - {fileID: 43719730201737784}
   - {fileID: 2564105862144760488}
   - {fileID: 1072523883380156228}
   m_Father: {fileID: 6791844251413147952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1820100996755185250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2693459738262330668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f82239c7d3964e43b87ac969e98650a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AttackRange: 0.25
 --- !u!212 &7145553773790442040
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -336,12 +351,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RaycastDistance: 10
-  m_AttackMeleeDistance: 1.5
-  m_AttackRangeDistance: 5
+  m_AttackMeleeDistance: 3
+  m_AttackRangeDistance: 7
   m_Speed: 4
   m_RaycastGenerator: {fileID: 1072523883380156228}
   m_objectCollider: {fileID: 731597685810675133}
-  healthBar: {fileID: 0}
+  healthBar: {fileID: 3150160857104385874}
 --- !u!114 &5310116063714632091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -507,6 +522,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pHealth: {fileID: 0}
   damage: 20
+--- !u!1 &3842673330922479878
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 43719730201737784}
+  m_Layer: 9
+  m_Name: AttackQueryPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &43719730201737784
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3842673330922479878}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4616291927637896748}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4847178429149222403
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,7 +842,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '"#$"%"#$@@!'
+  m_text: "\xA1NO LLEGAR\xC1S\nAL JEFE!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -859,7 +905,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 1.3078003, y: 0, z: 0, w: 0}
+  m_margin: {x: -0.86301804, y: -0.23539025, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

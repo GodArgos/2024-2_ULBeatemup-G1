@@ -27,6 +27,12 @@ public class playerHealth : MonoBehaviour
         }
     }
 
+    public void TakeDamage(float damageAmount)
+    {
+        Debug.Log("TROOK ASDAS");
+        health -= damageAmount;
+    }
+
     void ResetLevel()
     {
         // Reiniciar el nivel cargando la escena actual de nuevo

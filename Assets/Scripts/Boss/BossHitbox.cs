@@ -11,14 +11,14 @@ public class BossHitbox : MonoBehaviour, IHitbox
     [SerializeField] private BossHealth bossHealth;
     [SerializeField] private float damageAmount;
 
-    public void Hit()
+    public void Hit(float optionalDamage)
     {
         /*if (!m_bossMovement.IsCharging)
         {
             bossHealth.TakeDamage(damageAmount);
             m_BossAnimator.SetTrigger("ReceiveAttack");
         }*/
-        bossHealth.TakeDamage(damageAmount);
+        bossHealth.TakeDamage(damageAmount != 0 ? damageAmount : optionalDamage);
         m_BossAnimator.SetTrigger("ReceiveAttack");
     }
 }

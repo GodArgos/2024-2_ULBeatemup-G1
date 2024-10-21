@@ -33,8 +33,12 @@ public class PlayerMovement : MonoBehaviour
     private Transform m_FloorTransform;
     private Vector2 m_Velocity = Vector2.zero;
     private AudioSource m_AudioSource;
-
+    private bool onCinematic = false;
     private Animator m_SpriteAnimator;
+
+    [SerializeField]
+    private RectTransform m_cowabunga;
+    private float lastX;
 
     private void Awake()
     {
@@ -52,42 +56,50 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move(float movX, float movY)
     {
-        if (movX < 0 && m_IsFacingRight)
+        if (!onCinematic)
         {
-            transform.rotation *= Quaternion.Euler(0f, 180f, 0f);
-            m_IsFacingRight = !m_IsFacingRight;
-        }
-        if (movX > 0 && !m_IsFacingRight)
-        {
-            transform.rotation *= Quaternion.Euler(0f, -180f, 0f);
-            m_IsFacingRight = !m_IsFacingRight;
-        }
+            if (movX < 0 && m_IsFacingRight)
+            {
+                transform.rotation *= Quaternion.Euler(0f, 180f, 0f);
+                m_IsFacingRight = !m_IsFacingRight;
+            }
+            if (movX > 0 && !m_IsFacingRight)
+            {
+                transform.rotation *= Quaternion.Euler(0f, -180f, 0f);
+                m_IsFacingRight = !m_IsFacingRight;
+            }
 
-        m_Velocity = new Vector2(
-            movX * m_SpeedX,
-            movY * m_SpeedY
-        );
+            lastX = movX;
 
-        if (Mathf.Abs(movX) > 0f)
-        {
-            m_SpriteAnimator.SetFloat("MovX", Mathf.Abs(movX));
-            m_SpriteAnimator.SetBool("Stop", false);
-        } else if (Mathf.Abs(movY) > 0f)
-        {
-            m_SpriteAnimator.SetFloat("MovX", Mathf.Abs(movY));
-            m_SpriteAnimator.SetBool("Stop", false);
-        }
-        else
-        {
-            m_SpriteAnimator.SetBool("Stop", true);
-            m_SpriteAnimator.SetFloat("MovX", 0f);
-        }
+            m_Velocity = new Vector2(
+                movX * m_SpeedX,
+                movY * m_SpeedY
+            );
 
+            if (Mathf.Abs(movX) > 0f)
+            {
+                m_SpriteAnimator.SetFloat("MovX", Mathf.Abs(movX));
+                m_SpriteAnimator.SetBool("Stop", false);
+            }
+            else if (Mathf.Abs(movY) > 0f)
+            {
+                m_SpriteAnimator.SetFloat("MovX", Mathf.Abs(movY));
+                m_SpriteAnimator.SetBool("Stop", false);
+            }
+            else
+            {
+                m_SpriteAnimator.SetBool("Stop", true);
+                m_SpriteAnimator.SetFloat("MovX", 0f);
+            }
+        }
     }
 
     private void Update()
     {
-        m_PlayerRb.velocity = m_Velocity;
+        if (!onCinematic)
+        {
+            m_PlayerRb.velocity = m_Velocity;
+        }
     }
 
     public void Jump()
@@ -180,6 +192,22 @@ public class PlayerMovement : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void Celebrate()
+    {
+        onCinematic = true;
+
+        if (lastX < 0)
+        {
+            m_cowabunga.rotation *= Quaternion.Euler(0f, -180f, 0f);
+        }
+        else
+        {
+            m_cowabunga.rotation *= Quaternion.Euler(0f, 180f, 0f);
+        }
+
+        m_SpriteAnimator.SetTrigger("Celebrate");
     }
 
     public void OnDrawGizmos()
