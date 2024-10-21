@@ -150,7 +150,7 @@ Transform:
   m_GameObject: {fileID: 54021361}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.011, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -256,7 +256,7 @@ GameObject:
   m_Component:
   - component: {fileID: 56053487}
   - component: {fileID: 56053488}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: BoundsCameraEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -393,7 +393,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SpeedX: 10
   m_SpeedY: 6
-  m_JumpSpeed: 400
+  m_JumpSpeed: 5
   IsJumping: 0
   m_FloorMovement: {fileID: 0}
   m_RaycastPoint: {fileID: 557928731}
@@ -1081,8 +1081,8 @@ GameObject:
   m_Component:
   - component: {fileID: 522088964}
   - component: {fileID: 522088963}
-  m_Layer: 0
-  m_Name: Bounds
+  m_Layer: 13
+  m_Name: GeneralBounds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1146,12 +1146,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 522088962}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -69.257416, y: -0.4310556, z: 0.0094741555}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 681820059}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &557928730
 GameObject:
@@ -1401,7 +1401,7 @@ GameObject:
   - component: {fileID: 610225076}
   m_Layer: 6
   m_Name: Floor
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1415,7 +1415,7 @@ Transform:
   m_GameObject: {fileID: 610225074}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.2353, y: -0.075, z: 0}
+  m_LocalPosition: {x: 0, y: -0.075, z: 0}
   m_LocalScale: {x: 1.774366, y: 0.16499208, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1549,6 +1549,7 @@ Transform:
   m_Children:
   - {fileID: 1570568011}
   - {fileID: 1741623744}
+  - {fileID: 522088964}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &829244001
@@ -2068,7 +2069,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1280064719}
   - component: {fileID: 1280064718}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: BoundsCameraBoss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3363,6 +3364,7 @@ GameObject:
   - component: {fileID: 1771002236}
   - component: {fileID: 1771002239}
   - component: {fileID: 1771002238}
+  - component: {fileID: 1771002240}
   m_Layer: 10
   m_Name: CSEnemy1
   m_TagString: Untagged
@@ -3447,6 +3449,33 @@ MonoBehaviour:
   newBound: {fileID: 56053488}
   m_Colliders: {fileID: 478864937}
   enemySpawner: {fileID: 1144427161}
+--- !u!50 &1771002240
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1771002235}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1875369338
 GameObject:
   m_ObjectHideFlags: 0
@@ -4113,7 +4142,6 @@ SceneRoots:
   - {fileID: 449247408}
   - {fileID: 3050237846509853390}
   - {fileID: 587359718}
-  - {fileID: 522088964}
   - {fileID: 589424468}
   - {fileID: 2137248284}
   - {fileID: 1975026303}

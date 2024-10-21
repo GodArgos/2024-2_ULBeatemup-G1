@@ -28,8 +28,9 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 m_InitialPos;
 
-    private Rigidbody2D m_SpriteRb;
-    private Rigidbody2D m_FloorRb;
+    private Rigidbody2D m_PlayerRb;
+    private Transform m_SpriteTransform;
+    private Transform m_FloorTransform;
     private Vector2 m_Velocity = Vector2.zero;
     private AudioSource m_AudioSource;
 
@@ -37,9 +38,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        m_SpriteRb = GetComponent<Rigidbody2D>();
-        //m_FloorRb = transform.Find("Floor").GetComponent<Rigidbody2D>();
+        m_PlayerRb = GetComponent<Rigidbody2D>();
         m_SpriteAnimator = transform.Find("Sprite").GetComponent<Animator>();
+        m_SpriteTransform = transform.Find("Sprite").GetComponent<Transform>();
+        m_FloorTransform = transform.Find("Floor").GetComponent<Transform>();
         m_AudioSource = GetComponent<AudioSource>();
     }
 
@@ -89,30 +91,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        //transform.position += (Vector3)(m_Velocity * Time.deltaTime);
-        m_SpriteRb.velocity = m_Velocity;
-    }
-
-    private void FixedUpdate()
-    {
-        if (IsJumping && m_SpriteRb.velocity.y < 0f)
-        {
-            m_SpriteAnimator.SetFloat("VelY", m_SpriteRb.velocity.y);
-
-            if (IsGrounded())
-            {
-                Debug.Log("DeactivateJump");
-                DeactivateJump();
-            }
-        }
-
+        m_PlayerRb.velocity = m_Velocity;
     }
 
     public void Jump()
     {
         if (!IsJumping)
         {
-            ActivateJump();
+            StartCoroutine(JumpMovement());
         }
     }
 
@@ -129,16 +115,48 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("ActivateJump");
         IsJumping = true;
         m_SpriteAnimator.SetFloat("VelY", 0f);
-        m_SpriteRb.AddForce(Vector2.up * m_JumpSpeed);
+        m_SpriteTransform.position = new Vector3(0, m_JumpSpeed * Time.deltaTime, 0f);
         m_SpriteAnimator.SetBool("Jump", true);
         m_AudioSource.Play();
+    }
+
+    private IEnumerator JumpMovement()
+    {
+        IsJumping = true;
+        m_SpriteAnimator.SetFloat("VelY", 0f);
+        m_SpriteAnimator.SetBool("Jump", true);
+        m_AudioSource.Play();
+
+        float jumpHeight = m_JumpSpeed * Time.deltaTime;
+        float totalTime = 0.5f; // Duración total del salto
+        float elapsedTime = 0f;
+
+        // Subir
+        while (elapsedTime < totalTime)
+        {
+            m_SpriteTransform.position += new Vector3(0, jumpHeight, 0);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        m_SpriteAnimator.SetFloat("VelY", -1f);
+
+        // Bajar
+        elapsedTime = 0f; // Reiniciar el tiempo transcurrido
+        while (!IsGrounded())
+        {
+            m_SpriteTransform.position -= new Vector3(0, jumpHeight, 0);
+            
+            yield return null;
+        }
+
+        DeactivateJump();
     }
 
     public void DeactivateJump()
     {
         IsJumping = false;
         m_SpriteAnimator.SetBool("Jump", false);
-        m_SpriteAnimator.SetFloat("VelY", 0f);
     }
 
     public void ActivateAttack1()
