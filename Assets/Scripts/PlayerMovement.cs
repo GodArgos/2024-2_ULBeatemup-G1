@@ -54,16 +54,12 @@ public class PlayerMovement : MonoBehaviour
     {
         if (movX < 0 && m_IsFacingRight)
         {
-            //transform.rotation *= Quaternion.Euler(0f, 180f, 0f);
-            var sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
-            sprite.flipX = true;
+            transform.rotation *= Quaternion.Euler(0f, 180f, 0f);
             m_IsFacingRight = !m_IsFacingRight;
         }
         if (movX > 0 && !m_IsFacingRight)
         {
-            //transform.rotation *= Quaternion.Euler(0f, -180f, 0f);
-            var sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
-            sprite.flipX = false;
+            transform.rotation *= Quaternion.Euler(0f, -180f, 0f);
             m_IsFacingRight = !m_IsFacingRight;
         }
 
