@@ -329,24 +329,6 @@ PolygonCollider2D:
       - {x: 77.243675, y: -5.0259204}
       - {x: 77.567375, y: 6.0990806}
   m_UseDelaunayMesh: 0
---- !u!1 &62168792 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2693459738262330668, guid: 7f5d5b04ce40a644b90588c922917a42, type: 3}
-  m_PrefabInstance: {fileID: 3050237846509853390}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &62168796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 62168792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f82239c7d3964e43b87ac969e98650a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AttackRange: 0.25
 --- !u!1 &98378006
 GameObject:
   m_ObjectHideFlags: 0
@@ -2836,7 +2818,7 @@ GameObject:
   - component: {fileID: 1485369547}
   m_Layer: 11
   m_Name: HitBox
-  m_TagString: Untagged
+  m_TagString: PlayerHitbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4454,14 +4436,6 @@ PrefabInstance:
       propertyPath: m_Events.m_Events.Array.data[0].m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 449247409}
-    - target: {fileID: 6629473339032684596, guid: 7f5d5b04ce40a644b90588c922917a42, type: 3}
-      propertyPath: m_AttackMeleeDistance
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6629473339032684596, guid: 7f5d5b04ce40a644b90588c922917a42, type: 3}
-      propertyPath: m_AttackRangeDistance
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 6791844251413147952, guid: 7f5d5b04ce40a644b90588c922917a42, type: 3}
       propertyPath: m_LocalPosition.x
       value: 47.27
@@ -4502,17 +4476,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9170757147448169196, guid: 7f5d5b04ce40a644b90588c922917a42, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2693459738262330668, guid: 7f5d5b04ce40a644b90588c922917a42, type: 3}
-      insertIndex: 1
-      addedObject: {fileID: 62168796}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f5d5b04ce40a644b90588c922917a42, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

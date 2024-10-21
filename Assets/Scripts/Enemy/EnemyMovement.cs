@@ -24,15 +24,22 @@ public class EnemyMovement : MonoBehaviour
     private Animator m_SpriteAnimator;
     private bool m_IsTalking = false;
     [SerializeField] private Collider2D m_objectCollider;
-    private Collider2D m_PlayerHitbox = null;
+    public Collider2D m_PlayerHitbox = null;
 
     [SerializeField]
     private Transform healthBar;
 
+    
+    [SerializeField]
+    private bool m_CanShootShuriken = true;
+    [SerializeField]
+    private float m_ShootCooldown = 3f;
+    private float shurikenTimer = 0;
+
     private void Awake() 
     {
         m_SpriteAnimator = transform.Find("Sprite").GetComponent<Animator>();
-        //m_RaycastGenerator = transform.Find("RaycastGenerator");
+        shurikenTimer = m_ShootCooldown;
     }
 
     private void Update()
@@ -46,6 +53,8 @@ public class EnemyMovement : MonoBehaviour
         // Si ya tenemos un jugador detectado
         if (m_PlayerHitbox != null)
         {
+            shurikenTimer -= Time.deltaTime;
+
             float distance = GetPlayerDistanceToHitboxCenter();
 
             if (distance > 0f)
@@ -116,9 +125,10 @@ public class EnemyMovement : MonoBehaviour
         {
             m_State = EnemyState.AttackMelee;
         }
-        else if (distance < m_AttackRangeDistance)
+        else if (distance < m_AttackRangeDistance && shurikenTimer <= 0)
         {
             m_State = EnemyState.AttackRange;
+            shurikenTimer = m_ShootCooldown;
         }
         else
         {

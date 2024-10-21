@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1257859951821303693
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2195987872448804695}
+  m_Layer: 9
+  m_Name: ShurikenThrowablePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2195987872448804695
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257859951821303693}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4616291927637896748}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1342271207836793625
 GameObject:
   m_ObjectHideFlags: 0
@@ -84,7 +115,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4616291927637896748}
-  - component: {fileID: 1820100996755185250}
+  - component: {fileID: 6023417077257432241}
   - component: {fileID: 7145553773790442040}
   - component: {fileID: 2882860451673377836}
   m_Layer: 0
@@ -109,11 +140,12 @@ Transform:
   m_Children:
   - {fileID: 2354538825425132099}
   - {fileID: 43719730201737784}
+  - {fileID: 2195987872448804695}
   - {fileID: 2564105862144760488}
   - {fileID: 1072523883380156228}
   m_Father: {fileID: 6791844251413147952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1820100996755185250
+--- !u!114 &6023417077257432241
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,6 +158,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AttackRange: 0.25
+  m_EnemyMovement: {fileID: 6629473339032684596}
+  m_ThrowablePoint: {fileID: 2195987872448804695}
+  m_ShurikenPrefab: {fileID: 1662535601277777371, guid: febe8391d3460d845a6ba097808819e7, type: 3}
 --- !u!212 &7145553773790442040
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -352,11 +387,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_RaycastDistance: 10
   m_AttackMeleeDistance: 3
-  m_AttackRangeDistance: 7
+  m_AttackRangeDistance: 10
   m_Speed: 4
   m_RaycastGenerator: {fileID: 1072523883380156228}
   m_objectCollider: {fileID: 731597685810675133}
+  m_PlayerHitbox: {fileID: 0}
   healthBar: {fileID: 3150160857104385874}
+  m_CanShootShuriken: 1
+  m_ShootCooldown: 3
 --- !u!114 &5310116063714632091
 MonoBehaviour:
   m_ObjectHideFlags: 0
