@@ -9,6 +9,7 @@ public class BossHealth : MonoBehaviour
     [SerializeField] float health, maxHealth = 100f;
   
     [SerializeField] FloatingHealthBar healthBar;
+    [SerializeField] CutSceneBoss cutSceneBoss;
 
     private void Awake()
     {
@@ -40,6 +41,7 @@ public class BossHealth : MonoBehaviour
 
     public void Die()
     {
+        cutSceneBoss.StartCinematic();
         Destroy(gameObject);
     }
 }
