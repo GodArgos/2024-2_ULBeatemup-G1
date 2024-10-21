@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class FloatingHealthBar : MonoBehaviour
 {
-    [SerializeField] private Slider slider;
+    [SerializeField] public Slider slider;
     [SerializeField] private Image bar;
     [SerializeField] private Color maxHealth;
     [SerializeField] private Color mediumHealth;

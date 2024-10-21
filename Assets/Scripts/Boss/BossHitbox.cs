@@ -13,12 +13,10 @@ public class BossHitbox : MonoBehaviour, IHitbox
 
     public void Hit(float optionalDamage)
     {
-        /*if (!m_bossMovement.IsCharging)
+        if (!m_bossMovement.IsCharging)
         {
-            bossHealth.TakeDamage(damageAmount);
+            bossHealth.TakeDamage(damageAmount != 0 ? damageAmount : optionalDamage);
             m_BossAnimator.SetTrigger("ReceiveAttack");
-        }*/
-        bossHealth.TakeDamage(damageAmount != 0 ? damageAmount : optionalDamage);
-        m_BossAnimator.SetTrigger("ReceiveAttack");
+        }
     }
 }

@@ -7,26 +7,10 @@ public class BossHealth : MonoBehaviour
 {
     public static event Action<Event> OnEnemyKilled;
     [SerializeField] float health, maxHealth = 100f;
-  
-    [SerializeField] FloatingHealthBar healthBar;
+
+    [SerializeField] private GameObject canvasHealth;
+    private FloatingHealthBar healthBar;
     [SerializeField] CutSceneBoss cutSceneBoss;
-
-    private void Awake()
-    {
-        healthBar = GetComponentInChildren<FloatingHealthBar>();
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        health = maxHealth;
-        healthBar.UpdateHealthBar(health,maxHealth);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void TakeDamage(float damageAmount)
     {
@@ -43,5 +27,16 @@ public class BossHealth : MonoBehaviour
     {
         cutSceneBoss.StartCinematic();
         Destroy(gameObject);
+    }
+
+    public void ActivateHealthBar()
+    {
+        if (!canvasHealth.activeInHierarchy)
+        {
+            canvasHealth.SetActive(true);
+            healthBar = canvasHealth.transform.GetChild(0).GetComponent<FloatingHealthBar>();
+            health = maxHealth;
+            healthBar.UpdateHealthBar(health, maxHealth);
+        }
     }
 }

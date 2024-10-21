@@ -385,7 +385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67bffb8adbf05c14fbb1639f427bd7a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RaycastDistance: 10
+  m_RaycastDistance: 8
   m_AttackMeleeDistance: 3
   m_AttackRangeDistance: 10
   m_Speed: 4
@@ -463,7 +463,6 @@ GameObject:
   - component: {fileID: 2354538825425132099}
   - component: {fileID: 1125668035555113302}
   - component: {fileID: 731597685810675133}
-  - component: {fileID: 3846875038517136384}
   m_Layer: 7
   m_Name: HitBox
   m_TagString: Untagged
@@ -546,20 +545,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.1665745, y: 0.5002761}
   m_EdgeRadius: 0
---- !u!114 &3846875038517136384
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3801064452436613545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6eb7cf61843c2364491f05865fe6561f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pHealth: {fileID: 0}
-  damage: 20
 --- !u!1 &3842673330922479878
 GameObject:
   m_ObjectHideFlags: 0

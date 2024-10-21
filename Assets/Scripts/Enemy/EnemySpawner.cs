@@ -1,5 +1,7 @@
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -14,10 +16,15 @@ public class EnemySpawner : MonoBehaviour
     public int maxEnemies = 3; // Máximo número de enemigos a generar
 
     [SerializeField]
+    private FloatingHealthBar firstEnemyHealthBar;
+    
+    [SerializeField]
     private PolygonCollider2D originalBounds;
 
     [SerializeField]
     public playerHealth pHealth;
+
+    private GameObject currentEnemy; // Referencia al enemigo actual
 
     private void Start()
     {
@@ -39,14 +46,34 @@ public class EnemySpawner : MonoBehaviour
         StartCoroutine(SpawnEnemies());
     }
 
-    // Corrutina para generar enemigos en intervalos
+    // Corrutina para generar enemigos cuando la salud del enemigo actual baja del 75%
     private IEnumerator SpawnEnemies()
     {
+        // Comprobar si hay enemigos para spawnear y si el spawner está activo
         while (spawnerActive && enemiesSpawned < maxEnemies)
         {
+            // Si es el primer enemigo, usamos la barra de vida proporcionada
+            if (enemiesSpawned == 0)
+            {
+                yield return new WaitUntil(() => firstEnemyHealthBar != null && GetHealthPercentage(firstEnemyHealthBar) < 0.75f);
+            }
+            else
+            {
+                // Espera hasta que el enemigo actual tenga menos del 75% de vida
+                if (currentEnemy != null)
+                {
+                    FloatingHealthBar enemyHealth = currentEnemy.transform.GetChild(2).GetChild(0).GetComponent<FloatingHealthBar>();
+                    if (enemyHealth != null)
+                    {
+                        yield return new WaitUntil(() => GetHealthPercentage(enemyHealth) < 0.75f);
+                    }
+                }
+            }
+
+            // Spawn el siguiente enemigo
             SpawnEnemyInZone();
             enemiesSpawned++;
-            yield return new WaitForSeconds(spawnInterval);
+            //yield return new WaitForSeconds(spawnInterval);
         }
 
         // Desactiva el spawner una vez que se generaron los enemigos
@@ -59,18 +86,10 @@ public class EnemySpawner : MonoBehaviour
         float minX = leftCollider.bounds.max.x;
         float maxX = rightCollider.bounds.min.x;
         float randomX = Random.Range(minX, maxX);
-        // float yPosition = leftCollider.bounds.center.y;
-        // Generar un valor aleatorio para la coordenada Y entre 0 y -5
         float randomY = Random.Range(0f, -5f);
 
         Vector2 spawnPosition = new Vector2(randomX, randomY);
-        var newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-        EnemyDamage enemyDamage = newEnemy.GetComponent<EnemyDamage>();
-        if (enemyDamage != null)
-        {
-            enemyDamage.pHealth = pHealth;
-        }
-
+        currentEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
     }
 
     // Llamar a este método desde el script del enemigo cuando muera
@@ -95,23 +114,32 @@ public class EnemySpawner : MonoBehaviour
         {
             leftCollider.enabled = false;
 
-            // Desactivar el renderer del collider izquierdo
             var leftRenderer = leftCollider.GetComponent<Renderer>();
             if (leftRenderer != null)
             {
                 leftRenderer.enabled = false;
             }
         }
+
         if (rightCollider != null)
         {
             rightCollider.enabled = false;
 
-            // Desactivar el renderer del collider derecho
             var rightRenderer = rightCollider.GetComponent<Renderer>();
             if (rightRenderer != null)
             {
                 rightRenderer.enabled = false;
             }
         }
+    }
+
+    // Método para obtener el porcentaje de salud de la barra de vida
+    private float GetHealthPercentage(FloatingHealthBar healthBar)
+    {
+        if (healthBar != null)
+        {
+            return healthBar.slider.value; // Devuelve el valor normalizado (entre 0 y 1)
+        }
+        return 1f; // Si no hay barra, devolver 1 (100% de salud)
     }
 }

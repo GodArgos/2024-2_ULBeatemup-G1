@@ -198,13 +198,13 @@ public class PlayerMovement : MonoBehaviour
     {
         onCinematic = true;
 
-        if (lastX < 0)
+        if (m_IsFacingRight)
         {
-            m_cowabunga.rotation *= Quaternion.Euler(0f, -180f, 0f);
+            m_cowabunga.rotation *= Quaternion.Euler(0f, 0, 0f);
         }
         else
         {
-            m_cowabunga.rotation *= Quaternion.Euler(0f, 180f, 0f);
+            m_cowabunga.rotation *= Quaternion.Euler(0f, 180, 0f);
         }
 
         m_SpriteAnimator.SetTrigger("Celebrate");
